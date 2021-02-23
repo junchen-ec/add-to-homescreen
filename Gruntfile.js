@@ -10,7 +10,7 @@ module.exports = function(grunt) {
 		uglify: {
 			dist: {
 				files: {
-					'dist/addtohomescreen.min.js': ['addtohomescreen.js'],
+					'dist/addtohomescreen.min.js': ['src/addtohomescreen.js'],
 				},
 			},
 		},

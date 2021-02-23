@@ -30,6 +30,7 @@
   "main": "dist/addtohomescreen.min.js",
   "name": "add-to-homescreen",
   "scripts": {
+    "build": "grunt",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "title": "add-to-homescreen",
