@@ -1,0 +1,37 @@
+{
+  "author": {
+    "name": "Jun Chen",
+    "email": "jimc@qimingtong.com",
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "Add to homescreen call out for iOS and Android",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-concurrent": "^2.0.1",
+    "grunt-contrib-imagemin": "^4.0.0",
+    "grunt-contrib-uglify": "^0.9.1",
+    "load-grunt-tasks": "^3.2.0"
+  },
+  "keywords": [
+    "iPhone",
+    "iPod",
+    "iPad",
+    "iOS",
+    "android",
+    "mobile"
+  ],
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://opensource.org/licenses/mit-license.php"
+    }
+  ],
+  "main": "dist/addtohomescreen.min.js",
+  "name": "add-to-homescreen",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "title": "add-to-homescreen",
+  "version": "1.0.0"
+}
