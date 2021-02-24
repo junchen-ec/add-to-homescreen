@@ -380,10 +380,15 @@ ath.Class = function (options) {
 		// URL doesn't have the token, so add it
 		if ( this.options.detectHomescreen == 'hash' ) {
 			history.replaceState('', window.document.title, document.location.href + '#ath');
-		} else if ( this.options.detectHomescreen == 'smartURL' ) {
-			history.replaceState('', window.document.title, document.location.href.replace(/(\/)?$/, '/ath$1'));
 		} else {
-			history.replaceState('', window.document.title, document.location.href + (document.location.search ? '&' : '?' ) + 'ath=');
+			const url = new URL(document.location.href);
+			if ( this.options.detectHomescreen == 'smartURL' ) {
+				url.pathname = url.pathname.replace(/(\/)?$/, '/ath$1');
+				history.replaceState('', window.document.title, url);
+			} else {
+				url.search += (url.search ? '&' : '?' ) + 'ath='; 
+				history.replaceState('', window.document.title, url);
+			}
 		}
 	}
 
