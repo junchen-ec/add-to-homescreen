@@ -198,7 +198,7 @@ _extend(ath, {
 	hasToken: document.location.hash == '#ath' || _reSmartURL.test(document.location.href) || _reQueryString.test(document.location.search),
 	isRetina: window.devicePixelRatio && window.devicePixelRatio > 1,
 	isIDevice: (/iphone|ipod|ipad/i).test(_ua),
-	isMobileChrome: _ua.indexOf('Android') > -1 && (/Chrome\/[.0-9]*/).test(_ua) && _ua.indexOf("Version") == -1,
+	isMobileChrome: _ua.indexOf('Android') > -1 && (/Chrome\/[.0-9]*/).test(_ua) ,//&& _ua.indexOf("Version") == -1, //include mobile chrome and android webview
 	isMobileIE: _ua.indexOf('Windows Phone') > -1,
 	language: _nav.language && _nav.language.toLowerCase().replace('-', '_') || ''
 });
@@ -217,6 +217,14 @@ ath.isTablet = (ath.isMobileSafari && _ua.indexOf('iPad') > -1) || (ath.isMobile
 
 ath.isCompatible = (ath.isMobileSafari && ath.OSVersion >= 6) || ath.isMobileChrome;	// TODO: add winphone
 
+if (ath.OS=="andriod") {
+	window.addEventListener('beforeinstallprompt', function(e) {
+		// Prevent Chrome 67 and earlier from automatically showing the prompt
+		e.preventDefault();
+		// Stash the event so it can be triggered later.
+		ath.deferredPrompt = e;
+	})
+}
 var _defaultSession = {
 	lastDisplayTime: 0,			// last time we displayed the message
 	returningVisitor: false,	// is this the first time you visit
@@ -446,6 +454,13 @@ ath.Class.prototype = {
 	},
 
 	show: function (force) {
+		//for android, we use different approach
+		if (ath.OS=="android"){
+			if (!ath.deferredPrompt) {
+				this.doLog("Add to homescreen: not displaying callout because no deferredPrompt");
+				return;
+			}
+		}
 		// in autostart mode wait for the document to be ready
 		if ( this.options.autostart && !_DOMReady ) {
 			setTimeout(this.show.bind(this), 50);
@@ -649,6 +664,27 @@ ath.Class.prototype = {
 		// fire the custom onRemove event
 		if ( this.options.onRemove ) {
 			this.options.onRemove.call(this);
+		}
+
+		if (ath.deferredPrompt){
+			ath.deferredPrompt.prompt();
+			// Wait for the user to respond to the prompt
+			var that = this;
+			ath.deferredPrompt.userChoice.then(function(choiceResult) {
+				if (choiceResult.outcome === 'accepted') {
+					that.doLog('Add to homescreen: User accepted the A2HS prompt');
+
+					that.session.added = true;
+					that.updateSession();
+		
+					if ( that.options.onAdd && ath.hasLocalStorage ) {	// double check on localstorage to avoid multiple calls to the custom event
+						that.options.onAdd.call(that);
+					}
+				} else {
+					that.doLog('Add to homescreen: User dismissed the A2HS prompt');
+				}
+				ath.deferredPrompt = null;
+      		});
 		}
 	},
 
