@@ -454,6 +454,11 @@ ath.Class.prototype = {
 	},
 
 	show: function (force) {
+		if (!this.isCompatible ) {
+			this.doLog("Add to homescreen: not displaying callout because device not supported");
+			return;
+		}
+   
 		//for android, we use different approach
 		if (ath.OS=="android"){
 			if (!ath.deferredPrompt) {
